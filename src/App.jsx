@@ -15,12 +15,13 @@ import { fetchAccount } from './service/api';
 import AdminLayout from './components/admin/AdminLayout';
 import PageAdmin from './components/admin/pages/PageAdmin';
 import BookAdmin from './components/admin/manage-book';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { doFetcherAccount } from './redux/account/accountSlice';
 import ProtectedRoute from './components/auth/protected-route/ProtectedRoute';
 import ListUser from './components/admin/manage-user/ListUser';
 import OrdersPage from './components/order';
 import History from './components/order/History';
+import Loading from './utils/Loading';
 const Layout = () => {
   return (
     <>
@@ -33,6 +34,7 @@ const Layout = () => {
 
 const App = () => {
   const dispatch = useDispatch()
+  const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const handleAccountToken = async () => {
     if (
       window.location.pathname === "/login" ||
@@ -105,7 +107,18 @@ const App = () => {
     }
   ]);
   return (
-    <><RouterProvider router={router} /></>
+    <>
+      {
+        isAuthenticated === true ||
+          window.location.pathname === "/login" ||
+          window.location.pathname === "/register" ||
+          window.location.pathname === "/"
+          ? (
+            <RouterProvider router={router} />
+          ) : (
+            <Loading></Loading>
+          )}
+    </>
   )
 }
 
